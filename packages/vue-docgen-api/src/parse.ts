@@ -73,6 +73,10 @@ export interface DocGenOptions {
 	 * all pug options passed to the pug compiler if you use it
 	 */
 	pugOptions?: pug.Options
+	/**
+	 * Custom template rendering functions
+	 */
+	addTemplateRenderers?: { [lang: string]: (content: string, filePath: string) => string }
 }
 
 /**

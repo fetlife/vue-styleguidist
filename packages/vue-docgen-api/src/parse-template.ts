@@ -22,17 +22,20 @@ export default function parseTemplate(
 	handlers: Handler[],
 	opts: ParseOptions
 ) {
-	const { filePath, pugOptions } = opts
+	const { filePath, pugOptions, addTemplateRenderers } = opts
 	if (tpl && tpl.content) {
-		const source =
-			tpl.attrs && tpl.attrs.lang === 'pug'
-				? pug.render(tpl.content.trim(), {
-						doctype: 'html',
-						...pugOptions,
-						filename: filePath
-					})
-				: tpl.content
-
+		const renderers: { [lang: string]: (content: string, filePath: string) => string } = {
+			pug: (content, _) => {
+				return pug.render(content, {
+					doctype: 'html',
+					...pugOptions,
+					filename: filePath
+				})
+			},
+			...addTemplateRenderers
+		}
+		const renderer = tpl.attrs && typeof  tpl.attrs.lang === 'string' && renderers[tpl.attrs.lang]
+		const source = renderer ? renderer(tpl.content.trim(), filePath) : tpl.content
 		const ast: RootNode = cacher(() => parse(source, { comments: true }), source)
 
 		const functional = !!tpl.attrs.functional
