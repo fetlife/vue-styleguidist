@@ -80,7 +80,7 @@ function isOptionsObject(opts: any): opts is DocGenOptions {
 		(!!opts.alias ||
 			opts.jsx !== undefined ||
 			!!opts.addScriptHandlers ||
-			!!opts.addTemplateHandlers)
+			!!opts.addTemplateHandlers ||
 			!!opts.addTemplateRenderers)
 	)
 }
